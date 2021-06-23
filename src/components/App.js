@@ -19,7 +19,28 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [userData, setUserData] = React.useState("");
   const history = useHistory();
-
+  React.useEffect(() => {
+    function handleEscClose(evt) {
+      if (evt.key === "Escape") {
+        closeAllPopups();
+      }
+    }
+    if (isInfoTooLTipOpen || isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard) {
+      document.addEventListener("keydown", handleEscClose);
+    }
+    return () => document.removeEventListener("keydown", handleEscClose);
+  });
+  React.useEffect(() => {
+    function handleOverlayClick(evt) {
+      if (evt.target.classList.contains("popup")) {
+        closeAllPopups();
+      }
+    }
+    if (isInfoTooLTipOpen || isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard) {
+      document.addEventListener("click", handleOverlayClick);
+    }
+    return () => document.removeEventListener("click", handleOverlayClick);
+  });
   React.useEffect(() => {
     tokenCheck();
   }, []);
@@ -35,7 +56,8 @@ function App() {
           setLoggedIn(true);
           history.push("/");
         }
-      });
+      })
+      .catch(err => console.log(err));
     }
   };
   const handleRegister = (email, password) => {

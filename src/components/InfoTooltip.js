@@ -1,11 +1,7 @@
 import React from "react";
-import good from '../images/good.svg'
-import bad from '../images/bad.svg'
-function InfoToolTip({
-  isOpen,
-  onClose,
-  regOk
-}) {
+import good from "../images/good.svg";
+import bad from "../images/bad.svg";
+function InfoToolTip({ isOpen, onClose, regOk }) {
   React.useEffect(() => {
     function handleEscClose(evt) {
       if (evt.key === "Escape") {
@@ -30,16 +26,26 @@ function InfoToolTip({
   });
   return (
     <div className={`popup popup_info ${isOpen ? "popup_opened" : ""}`}>
-      <div
-        className={`popup__container popup__container_info`}
-      >
+      <div className={`popup__container popup__container_info`}>
         <button
           type="reset"
           className={`popup__close-button popup__close-button_info`}
           onClick={onClose}
         ></button>
-        <img className='popup__img' src={`${regOk ? good : bad }`}/>
-        <p className="popup__answer">{`${regOk ? 'Вы успешно зарегестрировались' : 'Что-то пошло не так! Попробуйте ещё раз.'}`}</p>
+        <img
+          className="popup__img"
+          alt={`${
+            regOk
+              ? "Вы успешно зарегистрировались!"
+              : "Что-то пошло не так! Попробуйте ещё раз."
+          }`}
+          src={`${regOk ? good : bad}`}
+        />
+        <p className="popup__answer">{`${
+          regOk
+            ? "Вы успешно зарегистрировались!"
+            : "Что-то пошло не так! Попробуйте ещё раз."
+        }`}</p>
       </div>
     </div>
   );
