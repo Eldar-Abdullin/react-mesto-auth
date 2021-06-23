@@ -30,6 +30,7 @@ function Main(props) {
           onClick={props.onAddPlace}
         ></button>
       </section>
+      <div></div>
       <section className="elements">
         {props.cards.map((card) => (
           <Card

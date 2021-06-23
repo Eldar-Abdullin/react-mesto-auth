@@ -1,13 +1,18 @@
 import React from "react";
-
-function ImagePopup({ card, onClose }) {
+import good from '../images/good.svg'
+import bad from '../images/bad.svg'
+function InfoToolTip({
+  isOpen,
+  onClose,
+  regOk
+}) {
   React.useEffect(() => {
     function handleEscClose(evt) {
       if (evt.key === "Escape") {
         onClose();
       }
     }
-    if (card) {
+    if (isOpen) {
       document.addEventListener("keydown", handleEscClose);
     }
     return () => document.removeEventListener("keydown", handleEscClose);
@@ -18,23 +23,25 @@ function ImagePopup({ card, onClose }) {
         onClose();
       }
     }
-    if (card) {
+    if (isOpen) {
       document.addEventListener("click", handleOverlayClick);
     }
     return () => document.removeEventListener("click", handleOverlayClick);
   });
   return (
-    <div className={`popup popup_img ${card && "popup_opened"}`}>
-      <article className="popup__img-article">
+    <div className={`popup popup_info ${isOpen ? "popup_opened" : ""}`}>
+      <div
+        className={`popup__container popup__container_info`}
+      >
         <button
           type="reset"
-          className="popup__close-button popup__close-button_img"
+          className={`popup__close-button popup__close-button_info`}
           onClick={onClose}
         ></button>
-        <img className="popup__image" src={card?.link} alt={card?.name} />
-        <p className="popup__img-caption">{card?.name} </p>
-      </article>
+        <img className='popup__img' src={`${regOk ? good : bad }`}/>
+        <p className="popup__answer">{`${regOk ? 'Вы успешно зарегестрировались' : 'Что-то пошло не так! Попробуйте ещё раз.'}`}</p>
+      </div>
     </div>
   );
 }
-export default ImagePopup;
+export default InfoToolTip;

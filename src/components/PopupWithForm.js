@@ -9,6 +9,28 @@ function PopupWithForm({
   button,
   children,
 }) {
+  React.useEffect(() => {
+    function handleEscClose(evt) {
+      if (evt.key === "Escape") {
+        onClose();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscClose);
+    }
+    return () => document.removeEventListener("keydown", handleEscClose);
+  });
+  React.useEffect(() => {
+    function handleOverlayClick(evt) {
+      if (evt.target.classList.contains("popup")) {
+        onClose();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("click", handleOverlayClick);
+    }
+    return () => document.removeEventListener("click", handleOverlayClick);
+  });
   return (
     <div className={`popup popup_${name} ${isOpen ? "popup_opened" : ""}`}>
       <form

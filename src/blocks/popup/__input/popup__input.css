@@ -7,7 +7,6 @@
     text-align: start;
     font-size: 14px;
     line-height: 17px;
-    
   }
   @media screen and (max-width:730px) {
       .popup__input {
