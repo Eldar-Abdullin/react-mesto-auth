@@ -9,6 +9,7 @@ import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import ConfirmPopup from "./ConfirmPopup";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import InfoToolTip from "./InfoTooltip";
@@ -25,7 +26,13 @@ function App() {
         closeAllPopups();
       }
     }
-    if (isInfoTooLTipOpen || isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard) {
+    if (
+      isInfoTooLTipOpen ||
+      isEditAvatarPopupOpen ||
+      isEditProfilePopupOpen ||
+      isAddPlacePopupOpen ||
+      selectedCard
+    ) {
       document.addEventListener("keydown", handleEscClose);
     }
     return () => document.removeEventListener("keydown", handleEscClose);
@@ -36,7 +43,13 @@ function App() {
         closeAllPopups();
       }
     }
-    if (isInfoTooLTipOpen || isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard) {
+    if (
+      isInfoTooLTipOpen ||
+      isEditAvatarPopupOpen ||
+      isEditProfilePopupOpen ||
+      isAddPlacePopupOpen ||
+      selectedCard
+    ) {
       document.addEventListener("click", handleOverlayClick);
     }
     return () => document.removeEventListener("click", handleOverlayClick);
@@ -49,15 +62,17 @@ function App() {
     const jwt = localStorage.getItem("jwt");
 
     if (jwt) {
-      auth.getContent(jwt).then((res) => {
-        if (res) {
-          console.log(res)
-          setUserData(res.data.email)
-          setLoggedIn(true);
-          history.push("/");
-        }
-      })
-      .catch(err => console.log(err));
+      auth
+        .getContent(jwt)
+        .then((res) => {
+          if (res) {
+            console.log(res);
+            setUserData(res.data.email);
+            setLoggedIn(true);
+            history.push("/");
+          }
+        })
+        .catch((err) => console.log(err));
     }
   };
   const handleRegister = (email, password) => {
@@ -84,9 +99,7 @@ function App() {
       .then((res) => {
         if (res.token) {
           console.log(res);
-          setUserData(
-            email
-          )
+          setUserData(email);
           localStorage.setItem("jwt", res.token);
           setLoggedIn(true);
           history.push("/");
@@ -110,6 +123,7 @@ function App() {
         console.log(err);
       });
   }, []);
+  console.log(cards)
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -124,12 +138,7 @@ function App() {
       })
       .catch((err) => console.log(err));
   }
-  function handleCardDelete(card) {
-    api
-      .deleteCard(card._id)
-      .then(() => setCards((state) => state.filter((c) => c._id !== card._id)))
-      .catch((err) => console.log(err));
-  }
+
   const [currentUser, setCurrentUser] = React.useState({});
   React.useEffect(() => {
     api
@@ -149,7 +158,10 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
     React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-
+  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = React.useState(false);
+  function handleDeleteButoonClick() {
+    setIsConfirmPopupOpen(true);
+  }
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
   }
@@ -166,11 +178,20 @@ function App() {
     setSelectedCard(null);
     setIsInfoTooLTipOpen(false);
   }
+  function handleCardDelete(card) {
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards((state) => {
+          state.filter((c) => c._id !== card._id);
+        }, closeAllPopups());
+      })
+      .catch((err) => console.log(err));
+  }
   function handleUpdateAvatar({ avatar }) {
     api
       .changeUserAvatar(avatar)
       .then((data) => {
-        console.log(data);
         setCurrentUser(data);
         closeAllPopups();
       })
@@ -182,7 +203,6 @@ function App() {
     api
       .changeUserInfo(name, about)
       .then((data) => {
-        console.log(data);
         setCurrentUser(data);
         closeAllPopups();
       })
@@ -194,7 +214,6 @@ function App() {
     api
       .addNewCard(name, link)
       .then((newCard) => {
-        console.log(newCard);
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
@@ -224,6 +243,7 @@ function App() {
                 onAddPlace={handleAddPlaceClick}
                 onEditAvatar={handleEditAvatarClick}
                 onCardClick={setSelectedCard}
+                onDeleteButtonClick={handleDeleteButoonClick}
                 cards={cards}
                 onCardLike={handleCardLike}
                 onCardDelete={handleCardDelete}
@@ -240,6 +260,12 @@ function App() {
               onClose={closeAllPopups}
               onAddPlace={handleAddPlaceSumit}
             />
+            <ConfirmPopup
+              isOpen={isConfirmPopupOpen}
+              onClose={closeAllPopups}
+              card={selectedCard}
+              onCardDelete={handleCardDelete}
+            ></ConfirmPopup>
             <PopupWithForm
               isOpen={false}
               onClose={closeAllPopups}

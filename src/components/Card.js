@@ -18,7 +18,8 @@ function Card(props) {
     props.onCardLike(props.card);
   }
   function handleDeleteCard() {
-    props.onCardDelete(props.card);
+    props.onCardClick(props.card)
+    props.onDeleteButtonClick(true);
   }
   return (
     <article className="element">

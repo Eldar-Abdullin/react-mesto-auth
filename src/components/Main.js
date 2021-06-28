@@ -30,7 +30,6 @@ function Main(props) {
           onClick={props.onAddPlace}
         ></button>
       </section>
-      <div></div>
       <section className="elements">
         {props.cards.map((card) => (
           <Card
@@ -38,7 +37,7 @@ function Main(props) {
             card={card}
             onCardClick={props.onCardClick}
             onCardLike={props.onCardLike}
-            onCardDelete={props.onCardDelete}
+            onDeleteButtonClick={props.onDeleteButtonClick}
           />
         ))}
       </section>
